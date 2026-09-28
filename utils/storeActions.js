@@ -88,4 +88,9 @@ const exportData = () => {
   a?.click();
 };
 
-export { addExpense, addCategory, addSub, exportData };
+const savePlan = (p, store, setStore, setModal) => {
+  setStore({ ...store, plan: p });
+  setModal(null);
+};
+
+export { addExpense, addCategory, addSub, exportData, savePlan };

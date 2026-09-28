@@ -5,18 +5,6 @@ import { auth, db } from "@/lib/firebase.config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import {
-  BarChart3,
-  CalendarDays,
-  ChevronDown,
-  ChevronRight,
-  FileDown,
-  Plus,
-  Sparkles,
-  Wallet,
-} from "lucide-react";
-
-import {
-  formatMoney,
   isInRange,
   loadStore,
   queueSync,
@@ -27,12 +15,12 @@ import {
 import {
   Header,
   Login,
-  Field,
-  Filters,
-  Modal,
-  Stat,
-  SimpleAdd,
-  PlanModal,
+  // Field,
+  // Filters,
+  // Modal,
+  // Stat,
+  // SimpleAdd,
+  // PlanModal,
   DashHead,
   ContentGrid,
   FilterSection,
@@ -42,10 +30,11 @@ import {
 } from "../components/index.jsx";
 
 import {
-  addExpense,
-  addCategory,
-  addSub,
+  // addExpense,
+  // addCategory,
+  // addSub,
   exportData,
+  savePlan,
 } from "../utils/storeActions.js";
 
 export default function SpendWiseApp() {
@@ -145,7 +134,7 @@ export default function SpendWiseApp() {
             </button>
           </div>
         </div> */}
-        <DashHead />
+        <DashHead user={user} setModal={setModal} />
         {/* ============================= PLAN SECTION =========================== */}
         {/* <section className="plan-strip">
           <div>
@@ -164,7 +153,7 @@ export default function SpendWiseApp() {
             </span>
           </div>
         </section> */}
-        <PlanStrip />
+        <PlanStrip store={store} savings={savings} />
         {/* ============================= STATISTICS SECTION =========================== */}
         {/* <div className="stats">
           <Stat
@@ -200,7 +189,14 @@ export default function SpendWiseApp() {
             icon={<BarChart3 size={16} />}
           />
         </div> */}
-        <StatsSection />
+        <StatsSection
+          store={store}
+          total={total}
+          savings={savings}
+          daily={daily}
+          showBalance={showBalance}
+          setModal={setModal}
+        />
         {/* ============================= FILTERS SECTION =========================== */}
         {/* <section className="filter-section">
           <div className="section-title">
@@ -218,7 +214,12 @@ export default function SpendWiseApp() {
             categories={store.categories}
           />
         </section> */}
-        <FilterSection />
+        <FilterSection
+          filters={filters}
+          setFilters={setFilters}
+          categories={store?.categories}
+          exportData={exportData}
+        />
         {/* ============================= MAIN-CONTENT SECTION =========================== */}
         {/* <div className="content-grid">
           <section className="categories panel">
@@ -307,10 +308,31 @@ export default function SpendWiseApp() {
             </small>
           </aside>
         </div> */}
-        <ContentGrid />
+        <ContentGrid
+          store={store}
+          visibleExpenses={visibleExpenses}
+          open={open}
+          setOpen={setOpen}
+          setModal={setModal}
+          daily={daily}
+          total={total}
+        />
       </main>
       {/* ============================= MODAL SECTION =========================== */}
-      <ModalsSection />
+      <ModalsSection
+        modal={modal}
+        setModal={setModal}
+        expense={expense}
+        setExpense={setExpense}
+        today={today}
+        user={user}
+        store={store}
+        setStore={setStore}
+        password={password}
+        setPassword={setPassword}
+        setShowBalance={setShowBalance}
+        savePlan={(p) => savePlan(p, store, setStore, setModal)}
+      />
       {/* {modal === "expense" && (
         <Modal title="Add expense" onClose={() => setModal(null)}>
           <label className="field">
