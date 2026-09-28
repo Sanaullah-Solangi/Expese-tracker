@@ -32,7 +32,7 @@ const addExpense = (
   setModal(null);
 };
 
-const addCategory = (name, sub, amount) => {
+export const addCategory = (name, sub, amount, store, setStore, setModal) => {
   if (!name) return;
   setStore({
     ...store,
@@ -85,7 +85,7 @@ const exportData = () => {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "spendwise-expenses.json";
-  a.click();
+  a?.click();
 };
 
 export { addExpense, addCategory, addSub, exportData };

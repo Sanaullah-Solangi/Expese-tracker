@@ -31,23 +31,23 @@ export function Filters({ filters, setFilters, categories }) {
       <Field
         label="Start date"
         type="date"
-        value={filters.start}
+        value={filters?.start}
         onChange={(e) => setFilters({ ...filters, start: e.target.value })}
       />
       <Field
         label="End date"
         type="date"
-        value={filters.end}
+        value={filters?.end}
         onChange={(e) => setFilters({ ...filters, end: e.target.value })}
       />
       <label className="field">
         <span>Category</span>
         <select
-          value={filters.category}
+          value={filters?.category}
           onChange={(e) => setFilters({ ...filters, category: e.target.value })}
         >
           <option value="">All categories</option>
-          {categories.map((c) => (
+          {categories?.map((c) => (
             <option key={c.id}>{c.name}</option>
           ))}
         </select>
@@ -56,20 +56,20 @@ export function Filters({ filters, setFilters, categories }) {
         label="Min amount"
         type="number"
         placeholder="0"
-        value={filters.min}
+        value={filters?.min}
         onChange={(e) => setFilters({ ...filters, min: e.target.value })}
       />
       <Field
         label="Max amount"
         type="number"
         placeholder="Any"
-        value={filters.max}
+        value={filters?.max}
         onChange={(e) => setFilters({ ...filters, max: e.target.value })}
       />
       <Field
         label="Search"
         placeholder="Search notes..."
-        value={filters.search}
+        value={filters?.search}
         onChange={(e) => setFilters({ ...filters, search: e.target.value })}
       />
     </div>
