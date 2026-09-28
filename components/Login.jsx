@@ -2,7 +2,7 @@ import { useState } from "react";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { ShieldCheck, Wallet, BarChart3, FileDown } from "lucide-react";
 import Benefit from "./ui/Benefit";
-import { auth } from "@/lib/firebaseConfig"; // Direct centralized auth import kar liya
+import { auth, db } from "@/lib/firebase.config";
 
 export default function Login({ onLogin }) {
   const [busy, setBusy] = useState(false);

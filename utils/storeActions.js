@@ -1,4 +1,25 @@
-const addExpense = () => {
+// const addExpense = () => {
+//   if (!expense.category || !expense.subcategory || !expense.amount) return;
+//   const item = {
+//     ...expense,
+//     amount: Number(expense.amount),
+//     date: today,
+//     userId: user.uid,
+//   };
+//   setStore({ ...store, expenses: [...store.expenses, item] });
+//   setExpense({ category: "", subcategory: "", amount: "", note: "" });
+//   setModal(null);
+// };
+
+const addExpense = (
+  expense,
+  setExpense,
+  today,
+  user,
+  store,
+  setStore,
+  setModal,
+) => {
   if (!expense.category || !expense.subcategory || !expense.amount) return;
   const item = {
     ...expense,

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { auth, db } from "../lib/firebaseConfig";
+import { auth, db } from "@/lib/firebase.config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+
 import {
   BarChart3,
   CalendarDays,
@@ -12,8 +13,8 @@ import {
   Plus,
   Sparkles,
   Wallet,
-  X,
 } from "lucide-react";
+
 import {
   formatMoney,
   isInRange,
@@ -23,11 +24,28 @@ import {
   todayKey,
 } from "../utils/storage";
 
-// Saare alag kiye gaye components yahan import ho rahe hain
-import Header from "./Header";
-import Login from "./Login";
-import { Modal, Field, Filters, Stat } from "./CommonComponents";
-import { SimpleAdd, PlanModal } from "./Modals";
+// import Header from "./Header";
+// import Login from "./Login";
+// import { Modal, Field, Filters, Stat } from "./CommonComponents";
+// import { SimpleAdd, PlanModal } from "./Modals";
+
+import {
+  Header,
+  Login,
+  Field,
+  Filters,
+  Modal,
+  Stat,
+  SimpleAdd,
+  PlanModal,
+} from "../components/index.jsx";
+
+import {
+  addExpense,
+  addCategory,
+  addSub,
+  exportData,
+} from "../utils/storeActions.js";
 
 export default function SpendWiseApp() {
   const [user, setUser] = useState(null);
@@ -94,77 +112,9 @@ export default function SpendWiseApp() {
 
   if (!user) return <Login onLogin={setUser} auth={auth} />;
 
-  const addExpense = () => {
-    if (!expense.category || !expense.subcategory || !expense.amount) return;
-    const item = {
-      ...expense,
-      amount: Number(expense.amount),
-      date: today,
-      userId: user.uid,
-    };
-    setStore({ ...store, expenses: [...store.expenses, item] });
-    setExpense({ category: "", subcategory: "", amount: "", note: "" });
-    setModal(null);
-  };
-
-  const addCategory = (name, sub, amount) => {
-    if (!name) return;
-    setStore({
-      ...store,
-      categories: [
-        ...store.categories,
-        {
-          id: Date.now().toString(),
-          name,
-          subcategories: sub
-            ? [
-                {
-                  id: Date.now().toString() + "s",
-                  name: sub,
-                  amount: Number(amount) || 0,
-                },
-              ]
-            : [],
-        },
-      ],
-    });
-    setModal(null);
-  };
-
-  const addSub = (cat, name, amount) => {
-    setStore({
-      ...store,
-      categories: store.categories.map((c) =>
-        c.name === cat
-          ? {
-              ...c,
-              subcategories: [
-                ...c.subcategories,
-                {
-                  id: Date.now().toString(),
-                  name,
-                  amount: Number(amount) || 0,
-                },
-              ],
-            }
-          : c,
-      ),
-    });
-    setModal(null);
-  };
-
-  const exportData = () => {
-    const blob = new Blob([JSON.stringify(store.expenses, null, 2)], {
-      type: "application/json",
-    });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "spendwise-expenses.json";
-    a.click();
-  };
-
   return (
     <>
+      {/* ============================= HEADER SECTION =========================== */}
       <Header
         user={user}
         onLogout={() => {
@@ -172,7 +122,9 @@ export default function SpendWiseApp() {
           setUser(null);
         }}
       />
+      {/* ============================= DASHBOARD SECTION =========================== */}
       <main className="dashboard">
+        {/* ============================= GREETINGS & ACTIONS =========================== */}
         <div className="dash-head">
           <div>
             <span className="eyebrow plain">
@@ -192,6 +144,7 @@ export default function SpendWiseApp() {
             </button>
           </div>
         </div>
+        {/* ============================= PLAN SECTION =========================== */}
         <section className="plan-strip">
           <div>
             <span className="eyebrow">MONTHLY PLAN</span>
@@ -209,6 +162,7 @@ export default function SpendWiseApp() {
             </span>
           </div>
         </section>
+        {/* ============================= STATISTICS SECTION =========================== */}
         <div className="stats">
           <Stat
             label="Total balance"
@@ -243,6 +197,7 @@ export default function SpendWiseApp() {
             icon={<BarChart3 size={16} />}
           />
         </div>
+        {/* ============================= FILTERS SECTION =========================== */}
         <section className="filter-section">
           <div className="section-title">
             <div>
@@ -259,6 +214,7 @@ export default function SpendWiseApp() {
             categories={store.categories}
           />
         </section>
+        {/* ============================= MAIN-CONTENT SECTION =========================== */}
         <div className="content-grid">
           <section className="categories panel">
             <div className="section-title">
@@ -347,6 +303,7 @@ export default function SpendWiseApp() {
           </aside>
         </div>
       </main>
+      {/* ============================= MODAL SECTION =========================== */}
       {modal === "expense" && (
         <Modal title="Add expense" onClose={() => setModal(null)}>
           <label className="field">
@@ -394,7 +351,20 @@ export default function SpendWiseApp() {
             value={expense.note}
             onChange={(e) => setExpense({ ...expense, note: e.target.value })}
           />
-          <button className="primary wide" onClick={addExpense}>
+          <button
+            className="primary wide"
+            onClick={() =>
+              addExpense(
+                expense,
+                setExpense,
+                today,
+                user,
+                store,
+                setStore,
+                setModal,
+              )
+            }
+          >
             Save expense
           </button>
         </Modal>
