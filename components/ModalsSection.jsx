@@ -1,20 +1,25 @@
+import { useState } from "react";
 import { Modal, Field } from "../components/CommonComponents";
 import { addExpense, addCategory, addSub } from "../utils/storeActions";
 import { PlanModal, SimpleAdd } from "./Modals";
 export default function ModalsSection({
   modal,
   setModal,
-  expense,
-  setExpense,
   today,
   user,
   store,
   setStore,
-  password,
-  setPassword,
   setShowBalance,
   savePlan,
 }) {
+  const [password, setPassword] = useState("");
+  const [expense, setExpense] = useState({
+    category: "",
+    subcategory: "",
+    amount: "",
+    note: "",
+  });
+
   return (
     <>
       {modal === "expense" && (

@@ -38,15 +38,18 @@ export function queueSync() {
   if (typeof navigator !== "undefined" && navigator.onLine) return true;
   return false;
 }
+
 export function formatMoney(value) {
   return `Rs ${Math.round(value || 0).toLocaleString("en-IN")}`;
 }
+
 export function isInRange(date, start, end) {
   return (!start || date >= start) && (!end || date <= end);
 }
-export { seed };
 
 if (typeof window !== "undefined")
   window.addEventListener("online", () =>
-    window.dispatchEvent(new Event("spendwise-sync")),
+window.dispatchEvent(new Event("spendwise-sync")),
   );
+
+export { seed };
