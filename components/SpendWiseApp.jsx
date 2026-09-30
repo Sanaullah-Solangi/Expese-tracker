@@ -10,7 +10,7 @@ import {
   loadStore,
   queueSync,
   saveStore,
-  todayKey,
+  fullTimestamp,
 } from "../utils/storage";
 
 import {
@@ -49,7 +49,7 @@ export default function SpendWiseApp() {
     queueSync();
   }, [store]);
 
-  const today = todayKey();
+  const today = fullTimestamp();
   const visibleExpenses = useMemo(
     () =>
       store.expenses.filter(

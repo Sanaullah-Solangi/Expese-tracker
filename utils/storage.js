@@ -1,7 +1,5 @@
 const KEY = "spendwise-expenses-v1";
 
-export const todayKey = () => new Date().toISOString().slice(0, 10);
-
 const seed = {
   plan: { salary: 80000, savings: 10, password: "1234" },
   categories: [
@@ -19,7 +17,16 @@ const seed = {
   expenses: [],
 };
 
-export function loadStore() {
+const todayKey = () => new Date().toISOString().slice(0, 10);
+
+const fullTimestamp = () => {
+  const now = new Date();
+  const formatted = now.toISOString().slice(0, 19).replace("T", " ");
+  return formatted;
+  // Output: 2026-06-07 14:30:00
+};
+
+function loadStore() {
   if (typeof window === "undefined") return seed;
   try {
     return JSON.parse(localStorage.getItem(KEY)) || seed;
@@ -28,28 +35,46 @@ export function loadStore() {
   }
 }
 
-export function saveStore(store) {
+function saveStore(store) {
   if (typeof window === "undefined") return;
   localStorage.setItem(KEY, JSON.stringify(store));
   window.dispatchEvent(new Event("spendwise-sync"));
 }
 
-export function queueSync() {
+function queueSync() {
   if (typeof navigator !== "undefined" && navigator.onLine) return true;
   return false;
 }
 
-export function formatMoney(value) {
+function formatMoney(value) {
   return `Rs ${Math.round(value || 0).toLocaleString("en-IN")}`;
 }
 
-export function isInRange(date, start, end) {
-  return (!start || date >= start) && (!end || date <= end);
-}
+const isInRange = (dateStr, start, end) => {
+  const d = dateStr ? dateStr.slice(0, 10) : "";
+  const s = start ? start.slice(0, 10) : "";
+  const e = end ? end.slice(0, 10) : "";
+  return (!s || d >= s) && (!e || d <= e);
+};
+
+const capitalizeWords = (str) => {
+  if (!str) return "";
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
 
 if (typeof window !== "undefined")
   window.addEventListener("online", () =>
-window.dispatchEvent(new Event("spendwise-sync")),
+    window.dispatchEvent(new Event("spendwise-sync")),
   );
 
-export { seed };
+export {
+  seed,
+  todayKey,
+  fullTimestamp,
+  loadStore,
+  saveStore,
+  queueSync,
+  formatMoney,
+  isInRange,
+  capitalizeWords,
+};

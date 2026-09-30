@@ -11,6 +11,8 @@
 //   setModal(null);
 // };
 
+import { capitalizeWords } from "./storage";
+
 const addExpense = (
   expense,
   setExpense,
@@ -32,20 +34,23 @@ const addExpense = (
   setModal(null);
 };
 
-export const addCategory = (name, sub, amount, store, setStore, setModal) => {
+const addCategory = (name, sub, amount, store, setStore, setModal) => {
   if (!name) return;
+  const formattedName = capitalizeWords(name);
+  const formattedSub = sub ? capitalizeWords(sub) : "";
+
   setStore({
     ...store,
     categories: [
       ...store.categories,
       {
         id: Date.now().toString(),
-        name,
-        subcategories: sub
+        name: formattedName,
+        subcategories: formattedSub
           ? [
               {
                 id: Date.now().toString() + "s",
-                name: sub,
+                name: formattedSub,
                 amount: Number(amount) || 0,
               },
             ]
@@ -56,7 +61,10 @@ export const addCategory = (name, sub, amount, store, setStore, setModal) => {
   setModal(null);
 };
 
-const addSub = (cat, name, amount) => {
+const addSub = (cat, name, amount, store, setStore, setModal) => {
+  if (!cat || !name) return;
+  const formattedName = capitalizeWords(name);
+
   setStore({
     ...store,
     categories: store.categories.map((c) =>
@@ -67,7 +75,7 @@ const addSub = (cat, name, amount) => {
               ...c.subcategories,
               {
                 id: Date.now().toString(),
-                name,
+                name: formattedName,
                 amount: Number(amount) || 0,
               },
             ],
