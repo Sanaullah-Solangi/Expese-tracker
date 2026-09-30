@@ -128,6 +128,7 @@ export default function SpendWiseApp() {
           setModal={setModal}
           daily={daily}
           total={total}
+          setStore={setStore}
         />
       </main>
 

@@ -11,7 +11,7 @@
 //   setModal(null);
 // };
 
-import { capitalizeWords } from "./storage";
+import { capitalizeWords } from "./storage.js";
 
 const addExpense = (
   expense,
@@ -24,6 +24,7 @@ const addExpense = (
 ) => {
   if (!expense.category || !expense.subcategory || !expense.amount) return;
   const item = {
+    id: Date.now().toString(), // Unique ID delete karne ke liye
     ...expense,
     amount: Number(expense.amount),
     date: today,
@@ -32,6 +33,13 @@ const addExpense = (
   setStore({ ...store, expenses: [...store.expenses, item] });
   setExpense({ category: "", subcategory: "", amount: "", note: "" });
   setModal(null);
+};
+
+const deleteExpense = (expenseId, store, setStore) => {
+  setStore({
+    ...store,
+    expenses: store.expenses.filter((exp) => exp.id !== expenseId),
+  });
 };
 
 const addCategory = (name, sub, amount, store, setStore, setModal) => {
@@ -61,6 +69,13 @@ const addCategory = (name, sub, amount, store, setStore, setModal) => {
   setModal(null);
 };
 
+const deleteCategory = (catName, store, setStore) => {
+  setStore({
+    ...store,
+    categories: store.categories.filter((c) => c.name !== catName),
+  });
+};
+
 const addSub = (cat, name, amount, store, setStore, setModal) => {
   if (!cat || !name) return;
   const formattedName = capitalizeWords(name);
@@ -86,6 +101,20 @@ const addSub = (cat, name, amount, store, setStore, setModal) => {
   setModal(null);
 };
 
+const deleteSub = (catName, subName, store, setStore) => {
+  setStore({
+    ...store,
+    categories: store.categories.map((c) =>
+      c.name === catName
+        ? {
+            ...c,
+            subcategories: c.subcategories.filter((s) => s.name !== subName),
+          }
+        : c,
+    ),
+  });
+};
+
 const exportData = () => {
   const blob = new Blob([JSON.stringify(store.expenses, null, 2)], {
     type: "application/json",
@@ -101,4 +130,13 @@ const savePlan = (p, store, setStore, setModal) => {
   setModal(null);
 };
 
-export { addExpense, addCategory, addSub, exportData, savePlan };
+export {
+  addExpense,
+  deleteExpense,
+  addCategory,
+  deleteCategory,
+  addSub,
+  deleteSub,
+  exportData,
+  savePlan,
+};
