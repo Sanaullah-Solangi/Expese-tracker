@@ -1,6 +1,13 @@
-import { ChevronDown, ChevronRight, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, Trash2, Edit2 } from "lucide-react";
 import { formatMoney } from "../utils/storage";
-import { deleteCategory, deleteSub, deleteExpense } from "../utils/storeActions";
+import { 
+  deleteCategory, 
+  editCategory, 
+  deleteSub, 
+  editSub, 
+  deleteExpense, 
+  editExpense 
+} from "../utils/storeActions";
 
 export default function ContentGrid({
   store,
@@ -44,14 +51,25 @@ export default function ContentGrid({
                     {formatMoney(rows.reduce((s, e) => s + e.amount, 0))}
                   </strong>
                 </button>
-                <button
-                  className="icon-btn danger"
-                  title="Delete Category"
-                  onClick={() => deleteCategory(c.name, store, setStore)}
-                  style={{ background: "none", border: "none", cursor: "pointer", color: "#ff4d4d", padding: "4px" }}
-                >
-                  <Trash2 size={15} />
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                  <button
+                    title="Edit Category"
+                    onClick={() => {
+                      const newName = prompt("Edit category name:", c.name);
+                      if (newName) editCategory(c.id, newName, store, setStore);
+                    }}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "#666", padding: "4px" }}
+                  >
+                    <Edit2 size={14} />
+                  </button>
+                  <button
+                    title="Delete Category"
+                    onClick={() => deleteCategory(c.name, store, setStore)}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "#ff4d4d", padding: "4px" }}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               </div>
 
               {open === c.id && (
@@ -72,13 +90,25 @@ export default function ContentGrid({
                           </div>
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <strong>{formatMoney(amount)}</strong>
-                            <button
-                              title="Delete Sub-category"
-                              onClick={() => deleteSub(c.name, s.name, store, setStore)}
-                              style={{ background: "none", border: "none", cursor: "pointer", color: "#ff4d4d" }}
-                            >
-                              <Trash2 size={13} />
-                            </button>
+                            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                              <button
+                                title="Edit Sub-category"
+                                onClick={() => {
+                                  const newName = prompt("Edit sub-category name:", s.name);
+                                  if (newName) editSub(c.name, s.id, newName, store, setStore);
+                                }}
+                                style={{ background: "none", border: "none", cursor: "pointer", color: "#666" }}
+                              >
+                                <Edit2 size={12} />
+                              </button>
+                              <button
+                                title="Delete Sub-category"
+                                onClick={() => deleteSub(c.name, s.name, store, setStore)}
+                                style={{ background: "none", border: "none", cursor: "pointer", color: "#ff4d4d" }}
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
                           </div>
                         </div>
 
@@ -88,13 +118,28 @@ export default function ContentGrid({
                             {subRows.map((exp) => (
                               <div key={exp.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "13px", margin: "4px 0" }}>
                                 <span>{exp.note || "Expense"} - <b>{formatMoney(exp.amount)}</b></span>
-                                <button
-                                  title="Delete Expense"
-                                  onClick={() => deleteExpense(exp.id, store, setStore)}
-                                  style={{ background: "none", border: "none", cursor: "pointer", color: "#ff4d4d" }}
-                                >
-                                  <Trash2 size={12} />
-                                </button>
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                  <button
+                                    title="Edit Expense"
+                                    onClick={() => {
+                                      const newAmt = prompt("Edit amount:", exp.amount);
+                                      if (newAmt !== null) {
+                                        const newNote = prompt("Edit note:", exp.note || "");
+                                        editExpense(exp.id, newAmt, newNote, store, setStore);
+                                      }
+                                    }}
+                                    style={{ background: "none", border: "none", cursor: "pointer", color: "#666" }}
+                                  >
+                                    <Edit2 size={11} />
+                                  </button>
+                                  <button
+                                    title="Delete Expense"
+                                    onClick={() => deleteExpense(exp.id, store, setStore)}
+                                    style={{ background: "none", border: "none", cursor: "pointer", color: "#ff4d4d" }}
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                </div>
                               </div>
                             ))}
                           </div>

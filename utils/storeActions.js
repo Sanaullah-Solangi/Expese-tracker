@@ -24,7 +24,7 @@ const addExpense = (
 ) => {
   if (!expense.category || !expense.subcategory || !expense.amount) return;
   const item = {
-    id: Date.now().toString(), // Unique ID delete karne ke liye
+    id: Date.now().toString(),
     ...expense,
     amount: Number(expense.amount),
     date: today,
@@ -39,6 +39,17 @@ const deleteExpense = (expenseId, store, setStore) => {
   setStore({
     ...store,
     expenses: store.expenses.filter((exp) => exp.id !== expenseId),
+  });
+};
+
+const editExpense = (expenseId, newAmount, newNote, store, setStore) => {
+  setStore({
+    ...store,
+    expenses: store.expenses.map((exp) =>
+      exp.id === expenseId
+        ? { ...exp, amount: Number(newAmount) || exp.amount, note: newNote !== undefined ? newNote : exp.note }
+        : exp
+    ),
   });
 };
 
@@ -73,6 +84,17 @@ const deleteCategory = (catName, store, setStore) => {
   setStore({
     ...store,
     categories: store.categories.filter((c) => c.name !== catName),
+  });
+};
+
+const editCategory = (catId, newName, store, setStore) => {
+  if (!newName) return;
+  const formattedName = capitalizeWords(newName);
+  setStore({
+    ...store,
+    categories: store.categories.map((c) =>
+      c.id === catId ? { ...c, name: formattedName } : c
+    ),
   });
 };
 
@@ -115,6 +137,24 @@ const deleteSub = (catName, subName, store, setStore) => {
   });
 };
 
+const editSub = (catName, subId, newName, store, setStore) => {
+  if (!newName) return;
+  const formattedName = capitalizeWords(newName);
+  setStore({
+    ...store,
+    categories: store.categories.map((c) =>
+      c.name === catName
+        ? {
+            ...c,
+            subcategories: c.subcategories.map((s) =>
+              s.id === subId ? { ...s, name: formattedName } : s
+            ),
+          }
+        : c,
+    ),
+  });
+};
+
 const exportData = () => {
   const blob = new Blob([JSON.stringify(store.expenses, null, 2)], {
     type: "application/json",
@@ -133,10 +173,13 @@ const savePlan = (p, store, setStore, setModal) => {
 export {
   addExpense,
   deleteExpense,
+  editExpense,
   addCategory,
   deleteCategory,
+  editCategory,
   addSub,
   deleteSub,
+  editSub,
   exportData,
   savePlan,
 };
